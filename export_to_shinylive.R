@@ -33,7 +33,7 @@ build_app <- function(dir_build = "site", overwrite = TRUE, verbose = TRUE) {
     temp_dir_source,
     temp_dir_out,
     verbose = verbose,
-    wasm_packages = TRUE
+    wasm_packages = FALSE
   )
 
   fs::dir_copy(temp_dir_out, dir_build)
