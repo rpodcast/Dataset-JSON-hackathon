@@ -30,6 +30,10 @@ on:
         type: string
         default: "1"
         required: false
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
