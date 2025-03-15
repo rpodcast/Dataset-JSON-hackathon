@@ -33,7 +33,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -63,13 +63,13 @@ jobs:
         run: nix-shell --run "Rscript -e \"source('export_to_shinylive.R')\""
 
       - name: Upload site artifact
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@v3
         with:
           path: "site"
   
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     needs: build
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
