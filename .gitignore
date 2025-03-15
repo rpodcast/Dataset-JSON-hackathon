@@ -2,3 +2,7 @@ json_cache.db
 .Rproj.user
 .RData
 .Rhistory
+
+# nix files
+result
+.Rprofile
