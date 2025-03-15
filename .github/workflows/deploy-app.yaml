@@ -53,7 +53,7 @@ jobs:
           backtrace: full
 
       - name: Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
+        uses: DeterminateSystems/flakehub-cache-action@main
 
       - name: Build development environment
         run: |
@@ -63,7 +63,7 @@ jobs:
         run: nix-shell --run "Rscript -e \"source('export_to_shinylive.R')\""
 
       - name: Upload site artifact
-        if: ${{ false }}
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: "site"
