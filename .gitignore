@@ -6,3 +6,6 @@ json_cache.db
 # nix files
 result
 .Rprofile
+
+# shinylive files
+site/

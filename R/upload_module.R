@@ -7,22 +7,6 @@ uploadUI <- function(id) {
       card(
         max_height = "600px",
         card_header("File Management"),
-        div(
-          style = "display: flex; gap: 10px; align-items: flex-start;",
-          div(
-            style = "flex-grow: 1;",
-            fileInput(ns("json_files"), 
-                      "Choose JSON File(s)", 
-                      multiple = TRUE,
-                      accept = c(".json", ".ndjson"))
-          ),
-          div(
-            style = "margin-top: 25px;",
-            actionButton(ns("remove_files"), 
-                         "Remove All Files", 
-                         class = "btn-primary")
-          )
-        ),
         uiOutput(ns("file_selection"))
       ),
       card(
@@ -48,43 +32,15 @@ uploadUI <- function(id) {
 uploadServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    options(shiny.maxRequestSize=5*1024^3)
-    
-    observeEvent(input$remove_files, {
-      session$reload()
-    })
-    
-    uploaded_files <- reactiveVal(list())
+    uploaded_files <- reactiveVal(
+      list(
+        adsl_json = fromJSON("www/adsl.json", simplifyVector = FALSE),
+        adae_json = fromJSON("www/adae.json", simplifyVector = FALSE),
+        adtte_json = fromJSON("www/adtte.json", simplifyVector = FALSE)
+      )
+    )
     records <- reactiveVal(list())
     labels <- reactiveVal(list())
-    
-    
-    observeEvent(input$json_files, {
-      req(input$json_files)
-      files <- input$json_files
-      files_list <- uploaded_files()
-
-      # Process each uploaded file
-      for(i in 1:nrow(input$json_files)) {
-        file_path <- input$json_files$datapath[i]
-        file_name <- input$json_files$name[i]
-
-        # Read JSON content
-        content <- tryCatch(
-          fromJSON(file_path, simplifyVector = F),
-          error = function(e) NULL
-        )
-
-        if(!is.null(content)) {
-          files_list[[file_name]] <- content
-        }
-      }
-      
-      uploaded_files(files_list)
-    })
-    
-    
-    
     
     # Generate radio buttons for file selection
     output$file_selection <- renderUI({
@@ -97,8 +53,6 @@ uploadServer <- function(id) {
                    label = NULL,
                    choices = names(files))
     })
-    
-    
     
     # Function to remove specific elements from a list
     remove_specific_elements <- function(x) {
@@ -133,9 +87,7 @@ uploadServer <- function(id) {
     })
     
     
-    output$boxes <- renderUI({
-      req(input$json_files)
-      
+    output$boxes <- renderUI({      
       files <- uploaded_files()
       
       records <- t(sapply(uploaded_files(), function(x) c(records = x$records)))
@@ -179,7 +131,6 @@ uploadServer <- function(id) {
     })
     
     output$plot_metadata <- renderPlotly({
-      req(input$json_files)
       req(input$selected_file)
       
       
